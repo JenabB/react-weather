@@ -14,20 +14,28 @@ function Weather() {
 
   const search = (e) => {
     if (e.key === 'Enter') {
-      fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
-        .then((res) => res.json())
-        .then((result) => {
-          setWeather(result);
-          localStorage.setItem('weather', JSON.stringify(result));
-        });
-      fetch(`${api.base}forecast?q=${query}&appid=${api.key}`)
-        .then((res) => res.json())
-        .then((result) => {
-          setQuery('');
-          const forecasts = result.list.filter((_, index) => index % 15 === 0);
-          setForecasts(forecasts);
-          localStorage.setItem('forecasts', JSON.stringify(forecasts));
-        });
+      try {
+        fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
+          .then((res) => res.json())
+          .then((result) => {
+            setWeather(result);
+            localStorage.setItem('weather', JSON.stringify(result));
+          })
+          .catch((error) => console.log(error.response));
+        fetch(`${api.base}forecast?q=${query}&appid=${api.key}`)
+          .then((res) => res.json())
+          .then((result) => {
+            setQuery('');
+            const forecasts = result.list.filter(
+              (_, index) => index % 15 === 0
+            );
+            setForecasts(forecasts);
+            localStorage.setItem('forecasts', JSON.stringify(forecasts));
+          })
+          .catch((error) => console.log(error.response));
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -129,7 +137,9 @@ function Weather() {
             </div>
           </div>
         ) : (
-          <div>Ya</div>
+          <h1 style={{ color: 'white', fontWeight: 'bold' }}>
+            Masukkan nama kota
+          </h1>
         )}
       </main>
     </div>
